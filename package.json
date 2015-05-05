@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/main.js -o build/app.js",
-    "watch": "watchify src/main.js -o build/app.js",
-    "serve": "http-server"
+    "build": "browserify index.js -o www/js/app.js",
+    "watch": "watchify index.js -o www/js/app.js",
+    "serve": "http-server www"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,10 @@
     "watchify": "~3.1.2"
   },
   "dependencies": {
+    "gm2-circle": "0.0.1",
     "gm2-collision": "0.0.3",
+    "gm2-rect": "0.0.2",
+    "gm2-vector2": "0.0.1",
     "migl-input": "^1.1.1",
     "pixi-tiled": "^1.1.0",
     "pixi.js": "~3.0.2"
