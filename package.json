@@ -1,0 +1,32 @@
+{
+  "name": "npm-test",
+  "version": "0.0.1",
+  "description": "npm-test",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/main.js -o build/app.js",
+    "watch": "watchify src/main.js -o build/app.js",
+    "serve": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/beeglebug/npm-test.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/beeglebug/npm-test/issues"
+  },
+  "devDependencies": {
+    "browserify": "~9.0.8",
+    "http-server": "~0.8.0",
+    "watchify": "~3.1.2"
+  },
+  "dependencies": {
+    "gm2-collision": "0.0.3",
+    "migl-input": "^1.1.1",
+    "pixi-tiled": "^1.1.0",
+    "pixi.js": "~3.0.2"
+  }
+}
