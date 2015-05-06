@@ -20,6 +20,10 @@ var controls = {
     RIGHT: {
         triggers: ['<right>', 'D'],
         group: 'horizontal'
+    },
+
+    DEBUG: {
+        triggers: ['<meta>']
     }
 };
 
