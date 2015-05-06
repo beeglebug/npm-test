@@ -58,6 +58,7 @@ Loop.prototype.run = function (time) {
         this.lastTime = time;
 
         this.update(deltaTime);
+        this.preRender(deltaTime);
         this.render(deltaTime);
     }
 };
@@ -83,5 +84,6 @@ Loop.prototype.checkFrame = function (deltaTime) {
  */
 Loop.prototype.update = function (deltaTime) {};
 Loop.prototype.render = function (deltaTime) {};
+Loop.prototype.preRender = function (deltaTime) {};
 
 module.exports = Loop;

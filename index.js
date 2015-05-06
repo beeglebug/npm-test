@@ -1,10 +1,9 @@
 var PIXI = require('pixi.js');
-var pixiTiled = require('pixi-tiled');
-var Rect = require('gm2-rect');
 var Circle = require('gm2-circle');
-var Collision = require('gm2-collision');
-var Vector2 = require('gm2-vector2');
 
+require('pixi-tiled');
+
+var Physics = require('./src/Physics');
 var Loop = require('./src/Loop');
 
 var renderer = new PIXI.WebGLRenderer(800, 600);
@@ -15,11 +14,7 @@ PIXI.loader.add('assets/map.json', function(res) {
 
     var map = res.tiledMap;
 
-    var solid = map.getTilesByGid([2,3]);
-
-    walls = solid.map(function(tile) {
-        return new Rect(tile.width, tile.height, tile.position);
-    });
+    walls = map.getTilesByGid([2,3]);
 
     var debugGFX = new PIXI.Graphics();
     debugGFX.lineStyle(1, 0xFF0000);
@@ -82,22 +77,20 @@ loop.update = function(dt) {
 
     }
 
-    var response = new Collision.Response();
+    Physics.seperateCircleRects(circle, walls);
 
-    for(var i = 0, len = walls.length; i < len; i++) {
+};
 
-        if (Collision.circleRect(circle, walls[i], response)) {
-            circle.position.add(response.mtd);
-        }
+/**
+ * sync models and sprites
+ */
+loop.preRender = function(dt) {
 
-    }
-
+    player.position.set(circle.position.x, circle.position.y);
 
 };
 
 loop.render = function(dt) {
-
-    player.position.set(circle.position.x, circle.position.y);
 
     renderer.render(stage);
 
