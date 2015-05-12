@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify index.js -o www/js/app.js",
-    "watch": "watchify index.js -o www/js/app.js",
+    "watch": "watchify index.js --outfile www/js/app.js --debug --verbose",
     "serve": "http-server www"
   },
   "repository": {

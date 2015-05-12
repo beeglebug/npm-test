@@ -8,7 +8,7 @@ var Loop = require('./src/Loop');
 var input = require('./src/input');
 var Camera = require('./src/Camera');
 
-var renderer = new PIXI.WebGLRenderer(800, 600);
+var renderer = new PIXI.WebGLRenderer(320,240);
 var mount = document.getElementById('app-mount');
 mount.appendChild(renderer.view);
 
@@ -23,6 +23,18 @@ PIXI.loader.add('assets/spritesheets/debug.json', function(res) {
 });
 
 var map;
+var circle = new Circle(3);
+
+var stage = new PIXI.Container();
+var world = new PIXI.Container();
+var camera = new Camera(world);
+camera.zoom = 4;
+camera.width = 320;
+camera.height = 240;
+camera.bounds = new PIXI.Rectangle(0,0,200,200);
+camera.follow(circle.position);
+
+stage.addChild(camera);
 
 PIXI.loader.add('assets/map.json', function(res) {
 
@@ -31,18 +43,16 @@ PIXI.loader.add('assets/map.json', function(res) {
     debugLayer.alpha = 0.6;
     debugLayer.visible = false;
 
-    camera.world.addChild(map.layers.floor);
-    camera.world.addChild(sortableLayer);
-    camera.world.addChild(debugLayer);
+    world.addChild(map.layers.floor);
+    world.addChild(sortableLayer);
+    world.addChild(debugLayer);
 
     loop.start();
 });
 
-
 input.attach();
 
 var walls = [];
-var circle = new Circle(3);
 
 var playerDebug = new PIXI.Sprite();
 var sortableLayer = new PIXI.Container();
@@ -50,14 +60,14 @@ var debugLayer = new PIXI.Container();
 
 var player = PIXI.Sprite.fromImage('assets/img/player.png');
 player.anchor.set(0.5, 1);
-circle.position.set(25,29);
+//circle.position.set(8,8);
 
 sortableLayer.addChild(player);
 
-var camera = new Camera();
-camera.zoom = 3;
 
 PIXI.loader.load();
+
+window.camera = camera;
 
 var loop = new Loop();
 
@@ -92,7 +102,6 @@ loop.update = function(dt) {
     }
 
     Physics.seperateCircleRects(circle, walls);
-
 };
 
 /**
@@ -104,6 +113,8 @@ loop.preRender = function(dt) {
     //@Todo move to entity update function
     player.position.set(circle.position.x, circle.position.y);
     playerDebug.position.set(circle.position.x, circle.position.y);
+
+    camera.update(dt);
 };
 
 loop.render = function(dt) {
