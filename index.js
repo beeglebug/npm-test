@@ -22,22 +22,20 @@ PIXI.loader.add('assets/spritesheets/debug.json', function(res) {
 
 });
 
+var map;
+
 PIXI.loader.add('assets/map.json', function(res) {
 
-    var map = res.tiledMap;
+    map = res.tiledMap;
 
-    walls = map.getTilesByGid(69);
-
-    debugLayer.addChild(map.layers.collision);
     debugLayer.alpha = 0.6;
     debugLayer.visible = false;
-    
-    stage.addChild(map.layers.floor);
-    stage.addChild(map.layers.shadows);
-    stage.addChild(map.layers.walls);
-    stage.addChild(entityLayer);
-    stage.addChild(map.layers.roofs);
-    stage.addChild(debugLayer);
+
+    camera.world.addChild(map.layers.floor);
+    camera.world.addChild(sortableLayer);
+    camera.world.addChild(debugLayer);
+
+    loop.start();
 });
 
 
@@ -47,17 +45,14 @@ var walls = [];
 var circle = new Circle(3);
 
 var playerDebug = new PIXI.Sprite();
-var entityLayer = new PIXI.Container();
+var sortableLayer = new PIXI.Container();
 var debugLayer = new PIXI.Container();
 
 var player = PIXI.Sprite.fromImage('assets/img/player.png');
 player.anchor.set(0.5, 1);
+circle.position.set(25,29);
 
-entityLayer.addChild(player);
-
-var stage = new PIXI.Container();
-
-stage.scale.set(4);
+sortableLayer.addChild(player);
 
 var camera = new Camera();
 camera.zoom = 3;
@@ -105,14 +100,14 @@ loop.update = function(dt) {
  */
 loop.preRender = function(dt) {
 
+    // update entity sub objects
+    //@Todo move to entity update function
     player.position.set(circle.position.x, circle.position.y);
     playerDebug.position.set(circle.position.x, circle.position.y);
 };
 
 loop.render = function(dt) {
 
-    renderer.render(stage);
+    renderer.render(camera);
 
 };
-
-loop.start();
