@@ -6,6 +6,7 @@ require('pixi-tiled');
 var Physics = require('./src/Physics');
 var Loop = require('./src/Loop');
 var input = require('./src/input');
+var Camera = require('./src/Camera');
 
 var renderer = new PIXI.WebGLRenderer(800, 600);
 var mount = document.getElementById('app-mount');
@@ -58,6 +59,8 @@ var stage = new PIXI.Container();
 
 stage.scale.set(4);
 
+var camera = new Camera();
+camera.zoom = 3;
 
 PIXI.loader.load();
 
