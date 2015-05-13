@@ -27,7 +27,7 @@ var circle = new Circle(3);
 
 var stage = new PIXI.Container();
 var world = new PIXI.Container();
-var camera = new Camera(world);
+var camera = new Camera(renderer);
 camera.zoom = 4;
 camera.width = 320;
 camera.height = 240;
@@ -119,6 +119,6 @@ loop.preRender = function(dt) {
 
 loop.render = function(dt) {
 
-    renderer.render(camera);
+    camera.render(world);
 
 };

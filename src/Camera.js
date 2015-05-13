@@ -1,15 +1,14 @@
 var PIXI = require('pixi.js');
 
-var Camera = function(world) {
+var Camera = function (renderer) {
 
     PIXI.Container.call(this);
 
-    this.world = world;
+    this.renderer = renderer;
     this.ui = new PIXI.Container();
 
     this.target = new PIXI.Point();
     this._follow = null;
-    this.speed = 1;
 
     this.mask = new PIXI.Graphics();
     this.viewport = new PIXI.Rectangle(0, 0, 300, 300);
@@ -19,19 +18,30 @@ var Camera = function(world) {
 
     this._redrawMask();
 
-    this.addChild(this.world);
+    this.root = new PIXI.Container();
+
+    this.addChild(this.root);
     this.addChild(this.mask);
 };
 
 Camera.prototype = Object.create(PIXI.Container.prototype);
 
-Camera.prototype.follow = function(position) {
+/**
+ * start following something
+ * must have an x and y position
+ * @param position
+ */
+Camera.prototype.follow = function (position) {
     this._follow = position;
 };
 
-Camera.prototype.update = function(dt) {
+/**
+ * update the camera position based on it's target
+ * @param dt delta time
+ */
+Camera.prototype.update = function (dt) {
 
-    if(this._follow) {
+    if (this._follow) {
         this.target.set(this._follow.x, this._follow.y);
     }
 
@@ -43,47 +53,62 @@ Camera.prototype.update = function(dt) {
 
     this._constrainFrustrum();
 
-    this.world.position.set(
+    this.root.position.set(
         -this.frustrum.x * this.zoom,
         -this.frustrum.y * this.zoom
     );
 };
 
-Camera.prototype._scaleFrustrum = function() {
-console.log('scale');
-    this.frustrum.width = this.viewport.width / this.zoom;
-    this.frustrum.height = this.viewport.height / this.zoom;
-
+Camera.prototype.render = function (tree) {
+    this.root.addChild(tree);
+    this.renderer.render(this.root);
 };
 
-Camera.prototype._constrainFrustrum = function() {
+/**
+ * keep the frustrum in scale relative to the viewport
+ * @private
+ */
+Camera.prototype._scaleFrustrum = function () {
+    this.frustrum.width = this.viewport.width / this.zoom;
+    this.frustrum.height = this.viewport.height / this.zoom;
+};
 
-    if(!this.bounds) { return; }
+/**
+ * make sure the frustrum is contained by the bounds (if set)
+ * @private
+ */
+Camera.prototype._constrainFrustrum = function () {
+    if (!this.bounds) {
+        return;
+    }
 
-    if(this.frustrum.x < this.bounds.x) {
+    if (this.frustrum.x < this.bounds.x) {
         this.frustrum.x = this.bounds.x;
     }
 
-    if(this.frustrum.y < this.bounds.y) {
+    if (this.frustrum.y < this.bounds.y) {
         this.frustrum.y = this.bounds.y;
     }
 
-    if(this.frustrum.x + this.frustrum.width > this.bounds.x + this.bounds.width) {
+    if (this.frustrum.x + this.frustrum.width > this.bounds.x + this.bounds.width) {
         this.frustrum.x = this.bounds.x + this.bounds.width - this.frustrum.width;
     }
 
-    if(this.frustrum.y + this.frustrum.height > this.bounds.y + this.bounds.height) {
+    if (this.frustrum.y + this.frustrum.height > this.bounds.y + this.bounds.height) {
         this.frustrum.y = this.bounds.y + this.bounds.height - this.frustrum.height;
     }
-
 };
 
-Camera.prototype._redrawMask = function() {
-
+/**
+ * update the mask if the viewport changes
+ * @private
+ */
+Camera.prototype._redrawMask = function () {
     this.mask.beginFill();
     this.mask.drawRect(0, 0, this.viewport.width, this.viewport.height);
     this.mask.endFill();
 };
+
 
 Object.defineProperties(Camera.prototype, {
 
@@ -122,7 +147,7 @@ Object.defineProperties(Camera.prototype, {
 
         set: function (level) {
             this._zoom = level;
-            this.world.scale.set(level);
+            this.root.scale.set(level);
             this._scaleFrustrum();
             this._constrainFrustrum();
             return this._zoom;
