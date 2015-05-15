@@ -45,21 +45,21 @@ Loop.prototype.run = function (time) {
 
     this.running = requestAnimationFrame(this._run);
 
-    var deltaTime;
+    var elapsed;
 
     if (this.lastTime === null) {
-        deltaTime = 0;
+        elapsed = 0;
     } else {
-        deltaTime = time - this.lastTime;
+        elapsed = time - this.lastTime;
     }
 
-    if (this.checkFrame(deltaTime)) {
+    if (this.checkFrame(elapsed)) {
 
         this.lastTime = time;
 
-        this.update(deltaTime);
-        this.preRender(deltaTime);
-        this.render(deltaTime);
+        // pass delta as time in seconds
+        this.update(elapsed / 1000);
+        this.render(elapsed / 1000);
     }
 };
 
@@ -84,6 +84,5 @@ Loop.prototype.checkFrame = function (deltaTime) {
  */
 Loop.prototype.update = function (deltaTime) {};
 Loop.prototype.render = function (deltaTime) {};
-Loop.prototype.preRender = function (deltaTime) {};
 
 module.exports = Loop;

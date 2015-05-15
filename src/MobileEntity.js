@@ -8,9 +8,13 @@ var MobileEntity = function() {
     this.velocity = new Vector2();
 };
 
-MobileEntity.prototype.update = function(dt) {
+MobileEntity.prototype.update = function(delta) {
 
-    Entity.update.call(this, dt);
+    // add velocity
+    this.position.x += this.velocity.x * delta;
+    this.position.y += this.velocity.y * delta;
+
+    Entity.prototype.update.call(this, delta);
 };
 
 module.exports = MobileEntity;
