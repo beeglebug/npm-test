@@ -2,11 +2,11 @@ var PIXI = require('pixi.js');
 var Circle = require('gm2-circle');
 
 require('pixi-tiled');
+var Camera = require('pixi-camera');
 
 var Physics = require('./src/Physics');
 var Loop = require('./src/Loop');
 var input = require('./src/input');
-var Camera = require('./src/Camera');
 
 var renderer = new PIXI.WebGLRenderer(320,240);
 var mount = document.getElementById('app-mount');
@@ -25,16 +25,17 @@ PIXI.loader.add('assets/spritesheets/debug.json', function(res) {
 var map;
 var circle = new Circle(3);
 
-var stage = new PIXI.Container();
 var world = new PIXI.Container();
-var camera = new Camera(renderer);
-camera.zoom = 4;
+
+var camera = new Camera(world);
+camera.zoom = 2;
 camera.width = 320;
 camera.height = 240;
-camera.bounds = new PIXI.Rectangle(0,0,200,200);
-camera.follow(circle.position);
-
-stage.addChild(camera);
+camera.target = circle.position;
+camera._bounds.width = 384;
+camera._bounds.height = 384;
+camera.bounded = true;
+window.camera = camera;
 
 PIXI.loader.add('assets/map.json', function(res) {
 
@@ -60,7 +61,7 @@ var debugLayer = new PIXI.Container();
 
 var player = PIXI.Sprite.fromImage('assets/img/player.png');
 player.anchor.set(0.5, 1);
-//circle.position.set(8,8);
+circle.position.set(16,16);
 
 sortableLayer.addChild(player);
 
@@ -119,6 +120,6 @@ loop.preRender = function(dt) {
 
 loop.render = function(dt) {
 
-    camera.render(world);
+    renderer.render(camera);
 
 };
